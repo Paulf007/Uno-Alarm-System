@@ -26,11 +26,11 @@ void start_mqtt (){
 }
 
 boolean reconnect() {
- if (client.connect("wsAlarm",LWT , 1 , 1 , "OFFLINE")){
+ if (client.connect("wsAlarm",LWT , 1 , 1 , "Offline")){
 //   if (client.connect("workShopAlarm")) {
     // Once connected, publish an announcement...
     //Serial.println("MQTT Connected");
-    client.publish(LWT,"ONLINE", true);
+    client.publish(LWT,"Online", true);
     connect_timeout = 0 ;
     MQTTdisconnect = 1 ;
     // ... and resubscribe
@@ -83,31 +83,41 @@ char* ip2CharArray(IPAddress IP) {
   return a;
 }
 
-void sendStatusData(int stat){
-  //Serial.print("MQTT Command Recv:");
- 
-  if (stat == 1){
-   Serial.println("Case 1 Run");
+void sendStatusData(byte stat){
+  Serial.print("MQTT Command Recv:");
+  Serial.println(stat);
+
+  
+  if (stat == 49){ // 49 is the byte version of 1
+  // Serial.println("Case 1 Run");
     StaticJsonDocument<100> doc;
       JsonObject Status  = doc.createNestedObject("Status");  
       Status["Module"] = 1;
-      JsonObject FriendlyName  = Status.createNestedObject("FriendlyName");
-      FriendlyName["0"] = Fname;
+      JsonArray  FriendlyName  = Status.createNestedArray("FriendlyName");
+      FriendlyName.add(Fname);
        Status["Topic"] = topic;  
       char buffer[80];
       serializeJson(doc, buffer);
       size_t n = serializeJson(doc, buffer);
       client.publish(statTopic, buffer,n);
-  } else if (stat == 5){
-     //  Serial.println("Case 5 Run");
+     //Serial.print("freeMemory()=");
+   // Serial.println(freeMemory());
+    //doc.clear();
+    checkMemory();
+  } else if (stat == 53){ // is the byte version of 5
+      //Serial.println("Case 5 Run");
       StaticJsonDocument<50> doc5;
       JsonObject Status5  = doc5.createNestedObject("StatusNET");  
       Status5["IPAddress"] =ip2CharArray(Ethernet.localIP());
-      //Status["Mac:"] ="60:01:94:07:AA:30";
-      char buffer5[50];
+      Status5["Mac"] = macS;
+      char buffer5[75];
       serializeJson(doc5, buffer5);
       size_t n5 = serializeJson(doc5, buffer5);
       client.publish(status_5, buffer5,n5);
+    //Serial.print("freeMemory()=");
+    //Serial.println(freeMemory());
+    checkMemory();
+    doc5.clear();
   }
     Serial.println(stat);
     
@@ -166,25 +176,20 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
 */
-  
-String topicString = String(topic); // convert topic to string 
-String msgIN = "";
-for (int i=0;i<length;i++)
-{
-msgIN += (char)payload[i];
+   
+if(strcmp(topic, cmdTopic) == 0){
+  //Serial.print ("Command topic recived:");
+  //Serial.println((char)payload[0]);
+  byte a = (char)payload[0];
+  sendStatusData((char)payload[0]) ; 
+  if ((char)payload[0] == '1'){
+    sendStatusData('1');
+  } else if ((char)payload[0] == '5'){
+   sendStatusData('5') ; 
+   Serial.println("Data 5 Sent");
+  }
 }
-val = msgIN; // this is the payload from MQTT
-byte cmnd = val.toInt();
-sendStatusData(cmnd);
-Serial.println(cmnd);
-/*
-  int cmdNr ;
-  int len = (strlen(inTopic)+4);
-  int len2 = len+2;
-  int relayNumber = topicString.substring(len,len2).toInt(); // the topic gets trimmed so that the relay number is left
-  int len3 = strlen(inTopic);
-  String s = topicString.substring(0,(len3+4));
-  cmdNr = topicString.substring((len3-1), len3+2).toInt();
-  Serial.println(s);
- */ 
+
+
+
 }

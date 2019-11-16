@@ -6,6 +6,7 @@
 * - Add LED indicator
 * - Optimase Size - 26506/1192 
 * - Made Program to resemble the basicks of a SonOff Devise Profile to emulate the inforamtion for a small program to monitor IT devices
+*  * Genereate Mac: https://ssl.crox.net/arduinomac/
 */
 
 #include <SPI.h>
@@ -13,12 +14,15 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <avr/wdt.h>
-#include "uptime.h"
+#include <MemoryFree.h>;
+//#include <pgmStrToRAM.h>; // not needed for new way. but good to have for reference.
 
 byte ver = 10 ;
 
 // Update these with values suitable for your hardware/network.
-byte mac[]    = {  0xDE, 0xED, 0xB8, 0xFE, 0xFE, 0xEE };
+//byte mac[]    = {  0xDE, 0xED, 0xB8, 0xFE, 0xFE, 0xEE };
+byte mac[6] = { 0x90, 0xA2, 0xDA, 0xF4, 0xDA, 0xB6 };
+const char* macS = "90:A2:DA:F4:DA:B6"; // This is used to report the mac address for the Monitor
 IPAddress ip(192, 168, 8, 13);
 IPAddress server(192, 168, 8, 30);
 // Host Name MAX 12 Characters
@@ -66,7 +70,7 @@ bool inpt1 = false ;
 const char* topic = "wsAlarm";
 const char* Fname = "Workshop Alarm";
 //const char* stat = "stat/";
-const char* LWT = "stat/wsAlarm/LWT" ;
+const char* LWT = "tele/wsAlarm/LWT" ;
 const char* inTopic = "cmd/wsAlarm/#";
 String val;
 const char* sensorTopic = "stat/wsAlarm/SENSOR";
