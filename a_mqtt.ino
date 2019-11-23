@@ -84,8 +84,8 @@ char* ip2CharArray(IPAddress IP) {
 }
 
 void sendStatusData(byte stat){
-  Serial.print("MQTT Command Recv:");
-  Serial.println(stat);
+//  Serial.print("MQTT Command Recv:");
+//  Serial.println(stat);
 
   
   if (stat == 49){ // 49 is the byte version of 1
@@ -102,8 +102,8 @@ void sendStatusData(byte stat){
       client.publish(statTopic, buffer,n);
      //Serial.print("freeMemory()=");
    // Serial.println(freeMemory());
-    //doc.clear();
-    checkMemory();
+    doc.clear();
+    //checkMemory();
   } else if (stat == 53){ // is the byte version of 5
       //Serial.println("Case 5 Run");
       StaticJsonDocument<50> doc5;
@@ -116,10 +116,10 @@ void sendStatusData(byte stat){
       client.publish(status_5, buffer5,n5);
     //Serial.print("freeMemory()=");
     //Serial.println(freeMemory());
-    checkMemory();
+   // checkMemory();
     doc5.clear();
   }
-    Serial.println(stat);
+   // Serial.println(stat);
     
   }
   
@@ -141,6 +141,7 @@ doc["ldr"] = analogRead(photocellPin); ;
  // Serial.println();
  size_t n = serializeJson(doc, buffer);
 client.publish(sensorTopic, buffer,n);
+ doc.clear();
 }
 
 void send_tele_state (){
@@ -151,6 +152,7 @@ void send_tele_state (){
   serializeJson(doc, buffer);
  size_t n = serializeJson(doc, buffer);
 client.publish(recState, buffer,n);  
+ doc.clear();
 }
 
 void send_data (){
@@ -180,13 +182,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
 if(strcmp(topic, cmdTopic) == 0){
   //Serial.print ("Command topic recived:");
   //Serial.println((char)payload[0]);
-  byte a = (char)payload[0];
+  //byte a = (char)payload[0];
   sendStatusData((char)payload[0]) ; 
   if ((char)payload[0] == '1'){
     sendStatusData('1');
   } else if ((char)payload[0] == '5'){
    sendStatusData('5') ; 
-   Serial.println("Data 5 Sent");
+   //Serial.println("Data 5 Sent");
   }
 }
 

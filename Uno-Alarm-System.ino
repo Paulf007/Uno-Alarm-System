@@ -14,10 +14,10 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <avr/wdt.h>
-#include <MemoryFree.h>;
+//#include <MemoryFree.h>;
 //#include <pgmStrToRAM.h>; // not needed for new way. but good to have for reference.
 
-byte ver = 10 ;
+byte ver = 12 ;
 
 // Update these with values suitable for your hardware/network.
 //byte mac[]    = {  0xDE, 0xED, 0xB8, 0xFE, 0xFE, 0xEE };
@@ -102,7 +102,6 @@ byte MQTTdisconnect = 0;
 void setup(){ 
   Serial.begin(9600);
   Serial.println("Startup Begin");
-  setVariableTopics() ;
   pinMode(8, OUTPUT); // Setup LED
   digitalWrite(8, LOW); 
   //setupDSB18 ();
