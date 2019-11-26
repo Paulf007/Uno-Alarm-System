@@ -18,11 +18,7 @@
 //#include <pgmStrToRAM.h>; // not needed for new way. but good to have for reference.
 
 byte ver = 12 ;
-<<<<<<< HEAD
 const char* topic = "wsAlarm";
-=======
-
->>>>>>> 8f2e0c8db037f6e75938254d4b3a73d1112570b0
 // Update these with values suitable for your hardware/network.
 //byte mac[6] = { 0x90, 0xA2, 0xDA, 0x66, 0xB1, 0x90 }; // Test Bench
 byte mac[6] = { 0x90, 0xA2, 0xDA, 0xF4, 0xDA, 0xB6 };
@@ -109,11 +105,7 @@ byte MQTTdisconnect = 0;
 
 void setup(){ 
   Serial.begin(9600);
-<<<<<<< HEAD
-  Serial.println(F("Startup Begin"));
-=======
   Serial.println("Startup Begin");
->>>>>>> 8f2e0c8db037f6e75938254d4b3a73d1112570b0
   pinMode(8, OUTPUT); // Setup LED
   digitalWrite(8, LOW); 
   //setupDSB18 ();
