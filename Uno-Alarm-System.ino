@@ -14,17 +14,20 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <avr/wdt.h>
-#include <MemoryFree.h>;
+//#include <MemoryFree.h>;
 //#include <pgmStrToRAM.h>; // not needed for new way. but good to have for reference.
 
-byte ver = 10 ;
-
+byte ver = 12 ;
+const char* topic = "wsAlarm";
 // Update these with values suitable for your hardware/network.
-//byte mac[]    = {  0xDE, 0xED, 0xB8, 0xFE, 0xFE, 0xEE };
+//byte mac[6] = { 0x90, 0xA2, 0xDA, 0x66, 0xB1, 0x90 }; // Test Bench
 byte mac[6] = { 0x90, 0xA2, 0xDA, 0xF4, 0xDA, 0xB6 };
-const char* macS = "90:A2:DA:F4:DA:B6"; // This is used to report the mac address for the Monitor
+//const char* macS = "90:A2:DA:66:B1:90"; // This is used to report the mac address for the Monitor
+const char* macS = "90:A2:DA:F4:DA:B6";  
+
 IPAddress ip(192, 168, 8, 13);
 IPAddress server(192, 168, 8, 30);
+const char* Fname = "Workshop Alarm";
 // Host Name MAX 12 Characters
 //char SetHostName[] = "wsAlarm";
 
@@ -67,19 +70,20 @@ bool inpt1 = false ;
 //+------------------------------------------------------------------+
 //| MQTT General
 //+------------------------------------------------------------------+
-const char* topic = "wsAlarm";
-const char* Fname = "Workshop Alarm";
+
+
 //const char* stat = "stat/";
 const char* LWT = "tele/wsAlarm/LWT" ;
-const char* inTopic = "cmd/wsAlarm/#";
-String val;
-const char* sensorTopic = "stat/wsAlarm/SENSOR";
-const char* dataTopic2 = "stat/wsAlarm/info2";
+//const char* inTopic = "cmd/wsAlarm/#";
+//String val;
+//const char* sensorTopic = "stat/wsAlarm1/SENSOR";
+//const char* dataTopic2 = "stat/wsAlarm1/info2";
 const char* outPinTopic = "stat/wsAlarm/SWITCH";
-const char* statTopic = "stat/wsAlarm/STATUS";
-const char* cmdTopic = "cmnd/wsAlarm/STATUS";
-const char* recState = "tele/wsAlarm/STATE" ;
-const char* status_5 = "stat/wsAlarm/STATUS5" ;
+
+const char* cmdTopic = "cmnd/wsAlarm/STATUS"; // Need to compare incommin payload
+//const char* recState = "tele/wsAlarm1/STATE" ;
+//const char* statTopic = "stat/wsAlarm1/STATUS";
+//const char* status_5 = "stat/wsAlarm1/STATUS5" ;
 
 
 //char LWT[20] = "";
@@ -101,14 +105,13 @@ byte MQTTdisconnect = 0;
 
 void setup(){ 
   Serial.begin(9600);
-  Serial.println("Startup Begin");
-  setVariableTopics() ;
+  Serial.println(F("Startup Begin"));
   pinMode(8, OUTPUT); // Setup LED
   digitalWrite(8, LOW); 
   //setupDSB18 ();
   Ethernet.begin(mac, ip);
-  //Ethernet.begin(mac);
-  Serial.println("Startup Complete");
+ // Ethernet.begin(mac);
+  Serial.println(F("Startup Complete"));
   start_mqtt ();
   setupInput();
   MQTTdisconnect = 0;
