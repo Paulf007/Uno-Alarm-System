@@ -39,6 +39,12 @@ long lastReconnectAttempt = 0;
 //+------------------------------------------------------------------+
 byte connect_timeout = 0;
 //+------------------------------------------------------------------+
+//|Setup MQTT WDT - To restart if MSG not recieved
+//+------------------------------------------------------------------+
+unsigned long previousKick = 0;
+//const long kickInterval = 30000 ; // for Testing 
+const long kickInterval = 610000 ; // 11 Min - Sothat the second payload could be recieved for incase.     
+//+------------------------------------------------------------------+
 //|Setup LDR
 //+------------------------------------------------------------------+
 const byte photocellPin = A0; // LDR and 10K pulldown registor are connected to A0
@@ -130,6 +136,7 @@ read_input_pins ();
 send_data ();
 reset_arduino_mqtt ();
 LEDflash();
+checkKick();
 //wdt_reset();
 
 

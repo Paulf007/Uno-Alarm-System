@@ -1,6 +1,7 @@
 void send_data (){
  if (millis()- newTmqtt >= 300000) {
     send_tele_state ();
+      client.publish(cmdTopic,"10");
  newTmqtt = millis();
     }
   

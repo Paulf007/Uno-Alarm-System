@@ -4,3 +4,12 @@ sensors.requestTemperatures();
 dstemp = sensors.getTempCByIndex(0); 
 return dstemp;  
 }
+
+void checkKick(){
+ if (millis()- previousKick >= kickInterval){  // TimeOut was reached and board needs to be reset - MQTT Meassage was not recieved in time
+         //Serial.println("No Kick Recieved Restart Board");
+         wdt_enable(WDTO_1S);
+         previousKick = millis(); 
+         //delay(5000);
+ }
+}

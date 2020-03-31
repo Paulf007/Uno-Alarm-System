@@ -48,6 +48,9 @@ if(strcmp(topic, cmdTopic) == 0){
     sendStatusData(1);
   } else if (command == 5){
    sendStatusData(5); 
+    }else if (command == 10){
+        Serial.println("Kick Recieved");
+        previousKick = millis(); 
     }
   }
 }
